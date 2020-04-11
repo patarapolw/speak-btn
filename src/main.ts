@@ -11,7 +11,7 @@ const lang = u.searchParams.get('lang') || ''
 elInput.value = q
 uSrc.searchParams.set('q', q)
 
-elLang.value = elLang.value || lang
+elLang.value = lang || elLang.value
 uSrc.searchParams.set('lang', lang)
 
 elOutput.src = uSrc.href
