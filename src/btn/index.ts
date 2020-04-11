@@ -25,11 +25,11 @@ function speak (s: string, lang: string) {
   if (vs.length === 0) {
     const m1 = lang.substr(0, 2)
     const m2 = lang.substr(3, 2)
-    const r1 = new RegExp(`^${m1}[-_]${m2}`, "i")
+    const r1 = new RegExp(`^${m1}[-_]${m2}`, 'i')
 
     vs = allVoices.filter((v) => r1.test(v.lang))
     if (vs.length === 0) {
-      const r2 = new RegExp(`^${m1}`, "i")
+      const r2 = new RegExp(`^${m1}`, 'i')
       vs = allVoices.filter((v) => r2.test(v.lang))
     }
   }
