@@ -34,10 +34,19 @@ function speak (s: string, lang: string) {
     }
   }
 
-  if (vs.length > 0) {
-    const u = new SpeechSynthesisUtterance(s)
-    u.lang = vs[0].lang
-    u.rate = rate
-    speechSynthesis.speak(u)
+  if (vs.length > 0 && !utterance) {
+    utterance = new SpeechSynthesisUtterance(s)
+    utterance.lang = vs[0].lang
+    utterance.rate = rate
+    speechSynthesis.speak(utterance)
+
+    elButton.classList.add('active')
+
+    utterance.addEventListener('end', () => {
+      utterance = null
+      elButton.classList.remove('active')
+    })
   }
 }
+
+let utterance: SpeechSynthesisUtterance | null = null

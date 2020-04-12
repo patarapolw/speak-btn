@@ -28,6 +28,6 @@ if (q) {
   elCode.innerHTML = `
 &lt;iframe src="${uMin.href}"
   style="width: 20px; height: 20px;"
-  frameborder="0" allowtransparency="true"></iframe>
+  frameborder="0" allowtransparency="true">&lt;/iframe>
 `
 }
