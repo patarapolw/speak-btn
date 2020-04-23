@@ -17,35 +17,40 @@ elButton.addEventListener('click', () => {
   }
 })
 
-function speak (s: string, lang: string) {
-  const rate = 1
+const allVoices: Record<string, string> = {}
+speechSynthesis.getVoices().map(v => {
+  allVoices[v.lang] = v.lang
+})
+speechSynthesis.onvoiceschanged = () => {
+  speechSynthesis.getVoices().map(v => {
+    allVoices[v.lang] = v.lang
+  })
+}
 
-  const allVoices = speechSynthesis.getVoices()
-  let vs = allVoices.filter((v) => v.lang === lang)
-  if (vs.length === 0) {
+export function speak (s: string, lang: string = 'zh') {
+  const voices = Object.keys(allVoices)
+  const stage1 = () => voices.filter((v) => v === lang)[0]
+  const stage2 = () => {
     const m1 = lang.substr(0, 2)
     const m2 = lang.substr(3, 2)
     const r1 = new RegExp(`^${m1}[-_]${m2}`, 'i')
-
-    vs = allVoices.filter((v) => r1.test(v.lang))
-    if (vs.length === 0) {
-      const r2 = new RegExp(`^${m1}`, 'i')
-      vs = allVoices.filter((v) => r2.test(v.lang))
-    }
+    return voices.filter((v) => r1.test(v))[0]
+  }
+  const stage3 = () => {
+    const m1 = lang.substr(0, 2).toLocaleLowerCase()
+    return voices.filter((v) => v.toLocaleLowerCase().indexOf(m1) === 0)[0]
   }
 
-  if (vs.length > 0 && !utterance) {
+  lang = stage1() || stage2() || stage3() || ''
+
+  if (lang && !utterance) {
     utterance = new SpeechSynthesisUtterance(s)
-    utterance.lang = vs[0].lang
-    utterance.rate = rate
+    utterance.lang = lang
     speechSynthesis.speak(utterance)
 
-    elButton.classList.add('active')
-
-    utterance.addEventListener('end', () => {
+    utterance.onend = () => {
       utterance = null
-      elButton.classList.remove('active')
-    })
+    }
   }
 }
 
